@@ -2,6 +2,8 @@
 import numpy as np
 #memanggil modul matplotlib sebagai plt
 import matplotlib.pyplot as plt
+#memanggil modul scipy sebagai signal
+import scipy.signal as signal
 
 #Membangun fungsi def untuk Discrete Fourier Transform dengan parameter x
 def naive_DFT(x):
@@ -28,19 +30,34 @@ dt = 1.0/200.0
 #interval waktu
 t = np.linspace(0.0, N*dt, N)
 #mendefinisikan fungsi yang akan dilakukan DFT
-jenis = input("Masukkan jenis sinyalnya (sinusoidal, eksponensial kompleks, heaviside): ")
-A = float(input("Masukkan amplitudo sinyal: "))
-w = float(input("Masukkan angular frequencynya dalam pi: "))
-teta = float(input("Masukkan sudut fasenya: "))
+meong = input("""
+Masukkan angka sesuai fungsi sinyalnya: 
+dirac delta = 1
+konstanta = 2
+e^jw0n = 3
+cos(w0n) = 4
+sin(w0n) = 5
+heaviside = 6
+""")
 
-if jenis == "sinusoidal":
-    o = A*np.sin(w*np.pi*t+teta)
-elif jenis == "eksponensial kompleks":
-    o = np.exp(A*(cos(w*np.pi*t+teta)+1j*sin(w*np.pi+teta)))
-elif jenis == "heaviside":
-    o = [1 if t[i]>-2 else 0 for i in range(len(t))]
-    
-yf = naive_DFT(o)
+if meong == "1":
+    y = signal.unit_impulse(len(t), 'mid')
+elif meong == "2":
+    maman = float(input("Masukkan nilai k (konstanta) : "))
+    y = [maman for i in range(len(t))]
+elif meong == "3":
+    burik  = float(input("Masukkan nilai w0 (omega 0) dalam pi : "))
+    y = np.exp(burik*np.pi*t)
+elif meong == "4":
+    pastel  = float(input("Masukkan nilai w0 (omega 0) dalam pi : "))
+    y = np.cos(pastel*np.pi*t)
+elif meong == "5":
+    ibnu  = float(input("Masukkan nilai w0 (omega 0) dalam pi : "))
+    y = np.sin(ibnu*np.pi*t)
+elif meong == "6":
+    y = np.heaviside(t, len(t)/2)
+
+yf = naive_DFT(y)
 xf = np.linspace(0.0, 1.0/(2.0*dt), N//2)
 yi = naive_IDFT(yf)
 
@@ -48,7 +65,7 @@ yi = naive_IDFT(yf)
 plt.figure(figsize=(5,15))
 #plot grafik data mentah
 plt.subplot(3, 1, 1)
-plt.plot(t, o, '-')
+plt.plot(t, y, '-')
 #untuk memberikan judul pada grafik data mentah
 plt.title('Data Mentah')
 #untuk memberikan subjudul pada sumbu-y
